@@ -35,7 +35,7 @@ function Signup() {
             // 회원가입 성공시
             setIsSignupComplete(true)
          })
-         .catch(() => {
+         .catch((error) => {
             // 회원가입 중 에러 발생시
             console.error('회원가입 에러: ', error)
          })

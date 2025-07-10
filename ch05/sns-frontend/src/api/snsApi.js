@@ -27,7 +27,7 @@ export const registerUser = async (userData) => {
       console.log('response: ', response)
       return response
    } catch (error) {
-      console.error(`API Request 오류: ${error.message}`)
+      console.error(`API Request 오류: ${error}`)
       throw error
    }
 }
