@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser') // 쿠키 처리 미들웨어
 const morgan = require('morgan') // HTTP 요청 로깅 미들웨어
 const session = require('express-session') // 세션 관리 미들웨어
 require('dotenv').config() // 환경 변수 관리
+const cors = require('cors') // cors 미들웨어 -> ★api 서버는 반드시 설정
 
 // 라우터 및 기타 모듈 불러오기
 const indexRouter = require('./routes')
@@ -27,6 +28,12 @@ sequelize
    })
 
 // 미들웨어 설정
+app.use(
+   cors({
+      origin: 'http://localhost:5173', // 특정 주소만 request 허용
+      credentials: true, // 쿠키, 세션 등 인증 정보 허용
+   })
+)
 app.use(morgan('dev')) // 로그
 app.use(express.static(path.join(__dirname, 'uploads'))) // 정적 파일 제공
 app.use(express.json()) // JSON 데이터 파싱
