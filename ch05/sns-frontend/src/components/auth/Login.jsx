@@ -1,5 +1,6 @@
 import { TextField, Button, Container, Typography, CircularProgress } from '@mui/material'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 function Login() {
    const [email, setEmail] = useState('') // 이메일
@@ -42,7 +43,9 @@ function Login() {
             </Button> */}
          </form>
 
-         <p>계정이 없으신가요? 회원가입</p>
+         <p>
+            계정이 없으신가요? <Link to="/signup">회원가입</Link>
+         </p>
       </Container>
    )
 }
