@@ -62,6 +62,8 @@ app.use((req, res, next) => {
 
 // 에러 미들웨어
 app.use((err, req, res, next) => {
+   console.error(err)
+
    const statusCode = err.status || 500
    const errorMessage = err.message || '서버 내부 오류'
 
