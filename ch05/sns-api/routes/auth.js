@@ -10,7 +10,6 @@ router.post('/join', async (req, res, next) => {
       {email: 'test3@test.com', nick: '유리', password: '11111'}
     */
    try {
-      console.log(req.body)
       const { email, nick, password } = req.body
 
       // 이메일로 기존 사용자 검색
@@ -21,10 +20,9 @@ router.post('/join', async (req, res, next) => {
 
       // 이미 사용자가 존재할 경우 409 상태코드와 메세지를 json 객체로 전달
       if (exUser) {
-         return res.status(409).json({
-            success: false,
-            message: '이미 존재하는 사용자입니다.',
-         })
+         const error = new Error('이미 존재하는 사용자입니다.')
+         error.status = 409 // Conflict
+         return next(error) // 에러 미들웨어로 이동
       }
 
       // 이메일 중복 확인을 통과시 새로운 사용자 계정 생성
@@ -35,7 +33,7 @@ router.post('/join', async (req, res, next) => {
       // 새로운 사용자 생성
       const newUser = await User.create({
          email,
-         nickc: nick,
+         nick: nick,
          password: hash,
       })
 
@@ -52,8 +50,8 @@ router.post('/join', async (req, res, next) => {
       })
    } catch (error) {
       // 에러발생시 미들웨어로 전달
+      error.status = 500
       error.message = '회원가입 중 오류가 발생했습니다.'
-      // error.status = ?
       next(error)
    }
 })
@@ -64,31 +62,26 @@ router.post('/login', async (req, res, next) => {
    passport.authenticate('local', (authError, user, info) => {
       if (authError) {
          // 로그인 인증 중 에러 발생시
-         return res.status(500).json({
-            success: false,
-            message: '인증 중 오류 발생',
-            error: authError,
-         })
+         authError.status = 500
+         authError.message = '인증 중 오류 발생'
+         return next(authError) // 에러 미들웨어로 전달
       }
 
       if (!user) {
          // 비밀번호 불일치 or 사용자가 없을 경우 info.message를 사용해서 메세지 전달
          // 401: unauthorized, 로그인 과정에서 인증이 안된경우 사용
-         return res.status(401).json({
-            success: false,
-            message: info.message || '로그인 실패',
-         })
+         const err = new Error(info.message || '로그인 실패')
+         err.status = 401 // Unauthorized
+         return next(err) // 에러 미들웨어로 전달
       }
 
       // 인증이 정상적으로 되고 사용자를 로그인 상태로 바꿈
       req.login(user, (loginError) => {
          if (loginError) {
             // 로그인 상태로 바꾸는 중 오류 발생시
-            return res.status(500).json({
-               success: false,
-               message: '로그인 중 오류 발생',
-               error: loginError,
-            })
+            loginError.status = 500
+            loginError.message = '로그인 중 오류 발생'
+            return next(loginError)
          }
 
          // 로그인 성공시 user객체와 함께 response
@@ -109,11 +102,9 @@ router.get('/logout', async (req, res, next) => {
    req.logout((logoutError) => {
       if (logoutError) {
          // 로그아웃 상태로 바꾸는 중 에러 발생시
-         return res.status(500).json({
-            success: false,
-            message: '로그아웃 중 오류 발생',
-            error: logoutError,
-         })
+         logoutError.status = 500
+         logoutError.message = '로그아웃 중 오류 발생'
+         return next(logoutError)
       }
 
       // 로그아웃 성공시 세션에 저장되어있던 사용자 id는 삭제된다
@@ -127,21 +118,27 @@ router.get('/logout', async (req, res, next) => {
 
 // 현재 로그인 상태 확인 localhost:8000/auth/status
 router.get('/status', async (req, res, next) => {
-   if (req.isAuthenticated()) {
-      // 로그인이 되었을때
-      // req.user는 passport의 역직렬화 설정에 의해 로그인 되었을때 로그인 한 user 정보를 가져온다
-      res.status(200).json({
-         isAuthenticated: true,
-         user: {
-            id: req.user.id,
-            nick: req.user.nick,
-         },
-      })
-   } else {
-      // 로그인이 되지 않았을때
-      res.status(200).json({
-         isAuthenticated: false,
-      })
+   try {
+      if (req.isAuthenticated()) {
+         // 로그인이 되었을때
+         // req.user는 passport의 역직렬화 설정에 의해 로그인 되었을때 로그인 한 user 정보를 가져온다
+         res.status(200).json({
+            isAuthenticated: true,
+            user: {
+               id: req.user.id,
+               nick: req.user.nick,
+            },
+         })
+      } else {
+         // 로그인이 되지 않았을때
+         res.status(200).json({
+            isAuthenticated: false,
+         })
+      }
+   } catch (error) {
+      error.status = 500
+      error.message = '로그인 상태확인 중 오류가 발생했습니다.'
+      next(error)
    }
 })
 
