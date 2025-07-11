@@ -9,6 +9,7 @@ module.exports = () => {
       new LocalStrategy(
          {
             // input 태그에서 name으로 사용하는 이름을 지정
+            // req.body = {email: 'klina8575@gmail.com', password: '11111'}
             usernameField: 'email', // req.body.email = 'test@test.com'
             passwordField: 'password', // req.body.password = '1111'
          },

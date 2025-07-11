@@ -36,6 +36,7 @@ export const registerUser = async (userData) => {
 export const loginUser = async (credential) => {
    try {
       console.log('credential: ', credential)
+      // {email: 'klina8575@gmail.com', password: '11111'}
       const response = await snsApi.post('/auth/login', credential)
 
       console.log('response: ', response)
