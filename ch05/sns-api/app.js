@@ -14,8 +14,10 @@ const postRouter = require('./routes/post')
 const pageRouter = require('./routes/page')
 const userRouter = require('./routes/user')
 const { sequelize } = require('./models') // index.js
+const passportConfig = require('./passport') // index.js
 
 const app = express()
+passportConfig() // passport 실행
 app.set('port', process.env.PORT || 8002)
 
 // 시퀄라이즈를 사용한 DB연결
