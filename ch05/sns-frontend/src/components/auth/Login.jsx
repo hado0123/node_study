@@ -1,8 +1,8 @@
 import { TextField, Button, Container, Typography, CircularProgress } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginUserThunk } from '../../features/authSlice'
+import { loginUserThunk, clearAuthError } from '../../features/authSlice'
 
 function Login() {
    const [email, setEmail] = useState('') // 이메일
@@ -10,6 +10,13 @@ function Login() {
    const dispatch = useDispatch()
    const navigate = useNavigate()
    const { loading, error } = useSelector((state) => state.auth)
+
+   useEffect(() => {
+      // 로그인 컴포넌트를 벗어날때 error state가 null로 초기화
+      return () => {
+         dispatch(clearAuthError())
+      }
+   }, [dispatch])
 
    // 로그인 버튼 눌렀을때
    const handleLogin = (e) => {
