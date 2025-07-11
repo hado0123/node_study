@@ -111,7 +111,7 @@ const authSlice = createSlice({
             state.loading = true
             state.error = null
          })
-         .addCase(checkAuthStatusThunk.fulfilled, (state) => {
+         .addCase(checkAuthStatusThunk.fulfilled, (state, action) => {
             state.loading = false
             // 로그인 상태일지 로그아웃 상태일지 모르기 때문에 아래와 같이 값을 준다
             state.isAuthenticated = action.payload.isAuthenticated
