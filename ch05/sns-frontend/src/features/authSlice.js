@@ -8,13 +8,17 @@ import { registerUser } from '../api/snsApi'
   error.response?.data?.message 사용시 response와 data가 undefined여도 에러가 발생하지 X
 */
 
+// rejectWithValue(에러메세지): 에러메세지를 rejected에 action.payload로 전달할때 사용
+
 // 회원가입
 export const registerUserThunk = createAsyncThunk('auth/registerUser', async (userData, { rejectWithValue }) => {
    // userData: 회원가입 정보
    try {
+      console.log('userData: ', userData)
       const response = await registerUser(userData)
       return response.data.user
    } catch (error) {
+      console.log(error)
       return rejectWithValue(error.response?.data?.message)
    }
 })

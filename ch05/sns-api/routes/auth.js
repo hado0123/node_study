@@ -6,13 +6,10 @@ const User = require('../models/user')
 // 회원가입 localhost:8000/auth/join
 router.post('/join', async (req, res, next) => {
    /*
-    {
-        email: 'test@test.com',
-        nick: '김하서',
-        password: 11111
-    }
+      {email: 'test3@test.com', nick: '유리', password: '11111'}
     */
    try {
+      console.log(req.body)
       const { email, nick, password } = req.body
 
       // 이메일로 기존 사용자 검색
@@ -37,7 +34,7 @@ router.post('/join', async (req, res, next) => {
       // 새로운 사용자 생성
       const newUser = await User.create({
          email,
-         nick,
+         nickc: nick,
          password: hash,
       })
 
@@ -55,6 +52,7 @@ router.post('/join', async (req, res, next) => {
    } catch (error) {
       // 에러발생시 미들웨어로 전달
       error.message = '회원가입 중 오류가 발생했습니다.'
+      // error.status = ?
       next(error)
    }
 })

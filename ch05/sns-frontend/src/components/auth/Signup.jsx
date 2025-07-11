@@ -36,6 +36,7 @@ function Signup() {
             setIsSignupComplete(true)
          })
          .catch((error) => {
+            // error: auth의 error state
             // 회원가입 중 에러 발생시
             console.error('회원가입 에러: ', error)
          })
