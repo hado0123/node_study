@@ -54,7 +54,7 @@ router.post('/', isLoggedIn, upload.single('img'), async (req, res, next) => {
       // 게시물 등록
       // post 테이블에 insert
       const post = await Post.create({
-         content: req.body.content, // 게시물 내용
+         contentdddd: req.body.content, // 게시물 내용
          img: `/${req.file.filename}`, // 이미지 url(파일명) => /제주도1211242432.jpg
          user_id: req.user.id, // 작성자 id(PK)
       })
