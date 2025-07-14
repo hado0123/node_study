@@ -3,9 +3,11 @@ const passport = require('passport')
 const bcrypt = require('bcrypt') // 암호화
 const router = express.Router()
 const User = require('../models/user')
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares')
 
 // 회원가입 localhost:8000/auth/join
-router.post('/join', async (req, res, next) => {
+// 로그인이 안된 상태일때만 회원가입을 진행하도록 한다
+router.post('/join', isNotLoggedIn, async (req, res, next) => {
    /*
       {email: 'test3@test.com', nick: '유리', password: '11111'}
     */
@@ -57,7 +59,8 @@ router.post('/join', async (req, res, next) => {
 })
 
 // 로그인 localhost:8000/auth/login
-router.post('/login', async (req, res, next) => {
+// 로그인이 안된 상태일때만 로그인을 하도록 한다
+router.post('/login', isNotLoggedIn, async (req, res, next) => {
    // authenticate 함수는 localStrategy.js 에 작성한 인증과정을 실행한다. 그 과정에서 에러발생시 authError 객체에 값을 주고, 인증과정 성공시 user에는 인증과정에서 passport에 넘겨줬던 exUser값이 들어있다.
    passport.authenticate('local', (authError, user, info) => {
       if (authError) {
@@ -70,9 +73,9 @@ router.post('/login', async (req, res, next) => {
       if (!user) {
          // 비밀번호 불일치 or 사용자가 없을 경우 info.message를 사용해서 메세지 전달
          // 401: unauthorized, 로그인 과정에서 인증이 안된경우 사용
-         const err = new Error(info.message || '로그인 실패')
-         err.status = 401 // Unauthorized
-         return next(err) // 에러 미들웨어로 전달
+         const error = new Error(info.message || '로그인 실패')
+         error.status = 401 // Unauthorized
+         return next(error) // 에러 미들웨어로 전달
       }
 
       // 인증이 정상적으로 되고 사용자를 로그인 상태로 바꿈
@@ -98,7 +101,8 @@ router.post('/login', async (req, res, next) => {
 })
 
 // 로그아웃 localhost:8000/auth/logout
-router.get('/logout', async (req, res, next) => {
+// 로그인이 된 상태일때만 로그아웃을 하도록 한다
+router.get('/logout', isLoggedIn, async (req, res, next) => {
    req.logout((logoutError) => {
       if (logoutError) {
          // 로그아웃 상태로 바꾸는 중 에러 발생시
