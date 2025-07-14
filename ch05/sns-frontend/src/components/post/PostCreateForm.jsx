@@ -1,7 +1,7 @@
 import { TextField, Button, Box } from '@mui/material'
 import { useState } from 'react'
 
-function PostCreateForm({ onSubmit }) {
+function PostCreateForm({ onPostCreate }) {
    const [imgUrl, setImgUrl] = useState('') // 이미지 경로(파일명 포함)
    const [imgFile, setImgFile] = useState(null) // 이미지 파일 객체
    const [content, setContent] = useState('') // 게시물 내용
@@ -34,7 +34,43 @@ function PostCreateForm({ onSubmit }) {
    }
 
    // 작성한 내용 전송
-   const handleSubmit = () => {}
+   const handleSubmit = (e) => {
+      e.preventDefault()
+
+      if (!content.trim()) {
+         alert('내용을 입력하세요.')
+         return
+      }
+
+      if (!hashtags.trim()) {
+         alert('해시태그를 입력하세요.')
+         return
+      }
+
+      if (!imgFile) {
+         alert('이미지 파일을 추가하세요.')
+         return
+      }
+
+      // ★ 데이터는 formData 객체에 담겨 서버에 전송된다
+      const formData = new FormData() // 폼 데이터를 쉽게 생성하고 전송할 수 있도록 하는 객체
+
+      // append(name, 값): 전송할 값들을 저장
+      formData.append('content', content) // 게시물 내용
+      formData.append('hashtags', hashtags) // 해시태그
+
+      // 파일명 인코딩(한글 파일명 깨짐 방지)
+      const encodedFile = new File([imgFile], encodeURIComponent(imgFile.name), { type: imgFile.type })
+      formData.append('img', encodedFile) // 이미지 파일 추가
+
+      onPostCreate(formData) // 게시물 등록
+
+      //   console.log('formData:', formData)
+
+      //   formData.forEach((value, key) => {
+      //      console.log(key, value)
+      //   })
+   }
 
    return (
       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }} encType="multipart/form-data">

@@ -42,6 +42,7 @@ const upload = multer({
 router.post('/', isLoggedIn, upload.single('img'), async (req, res, next) => {
    try {
       console.log('파일정보:', req.file)
+      console.log('formData:', req.body)
 
       // 업로드 된 파일이 없을경우
       if (!req.file) {
