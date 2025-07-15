@@ -163,7 +163,7 @@ router.get('/:id', async (req, res, next) => {
    }
 })
 
-// 전체 게시물 불러오기(페이징 기능) localhost:8000/post?page=1&limit=3
+// 전체 게시물 불러오기(페이징 기능) localhost:8000/post?page=1
 router.get('/', async (req, res, next) => {
    try {
       // parseInt('08', 10) -> 10진수 8을 반환
