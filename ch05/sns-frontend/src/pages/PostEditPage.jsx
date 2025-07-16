@@ -25,7 +25,7 @@ function PostEditPage() {
    return (
       <Container maxWidth="md">
          <h1>게시물 수정</h1>
-         <PostEditForm onPostEdit={onPostEdit} initialValues={post} />
+         {post && <PostEditForm onPostEdit={onPostEdit} initialValues={post} />}
       </Container>
    )
 }

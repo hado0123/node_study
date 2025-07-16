@@ -2,10 +2,40 @@ import { TextField, Button, Box } from '@mui/material'
 import { useState } from 'react'
 
 function PostEditForm({ onPostEdit, initialValues = {} }) {
-   const [imgUrl, setImgUrl] = useState('') // 이미지 경로(파일명 포함)
+   /*
+    특정 게시물 데이터(post)
+    initialValues = {
+         id: 1,
+         content: '안녕하세요', 
+         img: '/dog11111344242.jpg',
+         createAt: 2024-10-10 02:10:10,
+         updateAt:  2024-10-10 02:10:10,
+         User: {...},
+         Hashtags: [
+             {title: '여행', PostHashtag: {..}},
+             {title: '맛집', PostHashtag: {..}},
+             {title: '스위스', PostHashtag: {..}},
+         ]
+         
+         => #여행 #맛집 #스위스
+    }
+   */
+
+   const [imgUrl, setImgUrl] = useState(import.meta.env.VITE_APP_API_URL + initialValues.img) // 이미지 경로(파일명 포함)
    const [imgFile, setImgFile] = useState(null) // 이미지 파일 객체
-   const [content, setContent] = useState('') // 게시물 내용
-   const [hashtags, setHashtags] = useState('') //해시태그
+   const [content, setContent] = useState(initialValues.content) // 게시물 내용
+
+   /*
+   Hashtags: [
+             {title: '여행', PostHashtag: {..}},
+             {title: '맛집', PostHashtag: {..}},
+             {title: '스위스', PostHashtag: {..}},
+         ]
+   
+   */
+   const [hashtags, setHashtags] = useState(initialValues.Hashtags.map((tag) => `#${tag.title}`).join(' ')) // 해시태그 문자열을 만들어줌
+
+   // ['#여행', '#맛집', '#스위스'] => '#여행 #맛집 #스위스'
 
    // 이미지 미리보기
    const handleImageChange = (e) => {
@@ -47,10 +77,11 @@ function PostEditForm({ onPostEdit, initialValues = {} }) {
          return
       }
 
-      if (!imgFile) {
-         alert('이미지 파일을 추가하세요.')
-         return
-      }
+      // 수정시 이미지 파일을 바꾸지 않는 경우도 있으므로 이미지 파일 체크 사용 X
+      // if (!imgFile) {
+      //    alert('이미지 파일을 추가하세요.')
+      //    return
+      // }
 
       // ★ 데이터는 formData 객체에 담겨 서버에 전송된다
       const formData = new FormData() // 폼 데이터를 쉽게 생성하고 전송할 수 있도록 하는 객체
@@ -59,17 +90,14 @@ function PostEditForm({ onPostEdit, initialValues = {} }) {
       formData.append('content', content) // 게시물 내용
       formData.append('hashtags', hashtags) // 해시태그
 
-      // 파일명 인코딩(한글 파일명 깨짐 방지)
-      const encodedFile = new File([imgFile], encodeURIComponent(imgFile.name), { type: imgFile.type })
-      formData.append('img', encodedFile) // 이미지 파일 추가
+      // 이미지를 수정한 경우엔 imgFile에 이미지 객체가 있으므로, 아래와 같이 이미지를 수정한 경우에만 formData에 수정한 이미지 파일을 추가하도록 한다 -> 이미지를 수정하지 않았다면 이미지 파일을 서버에 보내지 않아도 된다
+      if (imgFile) {
+         // 파일명 인코딩(한글 파일명 깨짐 방지)
+         const encodedFile = new File([imgFile], encodeURIComponent(imgFile.name), { type: imgFile.type })
+         formData.append('img', encodedFile) // 이미지 파일 추가
+      }
 
-      onPostCreate(formData) // 게시물 등록
-
-      //   console.log('formData:', formData)
-
-      //   formData.forEach((value, key) => {
-      //      console.log(key, value)
-      //   })
+      onPostEdit(formData) // 게시물 수정
    }
 
    return (
@@ -93,7 +121,7 @@ function PostEditForm({ onPostEdit, initialValues = {} }) {
          <TextField label="해시태그 (# 구분)" variant="outlined" fullWidth value={hashtags} onChange={(e) => setHashtags(e.target.value)} placeholder="예: #여행 #음식 #일상" sx={{ mt: 2 }} />
 
          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-            등록하기
+            수정하기
          </Button>
       </Box>
    )
