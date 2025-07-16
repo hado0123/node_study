@@ -9,7 +9,7 @@ function PostEditPage() {
    const navigate = useNavigate()
    const dispatch = useDispatch()
    const { id } = useParams() // post의 id를 path 파라메터에서 가져온다
-   const { post, loading, error } = useSelector((state) => state.posts)
+   const { post, loading } = useSelector((state) => state.posts)
 
    // 게시물 데이터 불러오기
    useEffect(() => {
@@ -25,12 +25,11 @@ function PostEditPage() {
          })
          .catch((error) => {
             console.error('게시물 수정 중 오류 발생:', error)
-            alert('게시물 수정에 실패했습니다.')
+            alert('게시물 수정에 실패했습니다. ' + error)
          })
    }
 
    if (loading) return <p>로딩 중...</p>
-   if (error) return <p>에러발생: {error}</p>
 
    return (
       <Container maxWidth="md">
