@@ -3,7 +3,7 @@ import PostEditForm from '../components/post/PostEditForm'
 import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchPostByIdThunk } from '../features/postSlice'
+import { fetchPostByIdThunk, updatePostThunk } from '../features/postSlice'
 
 function PostEditPage() {
    const navigate = useNavigate()
@@ -17,7 +17,17 @@ function PostEditPage() {
    }, [dispatch, id])
 
    // 게시물 수정
-   const onPostEdit = (postData) => {}
+   const onPostEdit = (postData) => {
+      dispatch(updatePostThunk({ id, postData }))
+         .unwrap()
+         .then(() => {
+            navigate('/') //게시물 수정 후 메인페이지로 이동
+         })
+         .catch((error) => {
+            console.error('게시물 수정 중 오류 발생:', error)
+            alert('게시물 수정에 실패했습니다.')
+         })
+   }
 
    if (loading) return <p>로딩 중...</p>
    if (error) return <p>에러발생: {error}</p>

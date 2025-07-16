@@ -113,3 +113,23 @@ export const getPostById = async (id) => {
       throw error
    }
 }
+
+// 포스트 수정
+export const updatePost = async (id, postData) => {
+   try {
+      // id: post의 id, postData: 수정할 게시물 데이터가 담겨져있는 객체
+
+      // ★서버에 파일 전송시 반드시 해야하는 headers 설정
+      const config = {
+         headers: {
+            'Content-Type': 'multipart/form-data', // 파일 전송시 반드시 지정
+         },
+      }
+
+      const response = await snsApi.put(`/post/${id}`, postData, config)
+      return response
+   } catch (error) {
+      console.error(`API Request 오류: ${error}`)
+      throw error
+   }
+}
