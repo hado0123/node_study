@@ -136,6 +136,61 @@ router.post('/', isLoggedIn, upload.single('img'), async (req, res, next) => {
 // 게시물 수정 localhost:8000/post/:id
 router.put('/:id', isLoggedIn, upload.single('img'), async (req, res, next) => {
    try {
+      // 1. 게시물 존재 여부 확인
+      // select * from posts where id = ? and user_id = ? limit 1
+      const post = await Post.findOne({
+         where: { id: req.params.id, user_id: req.user.id },
+      })
+
+      // 게시물이 존재하지 않는다면
+      if (!post) {
+         const error = new Error('게시물을 찾을 수 없습니다.')
+         error.status = 404
+         return next(error)
+      }
+
+      // post 테이블 수정
+      await post.update({
+         content: req.body.content,
+         img: req.file ? `/${req.file.filename}` : post.img, // 수정된 이미지가 있으면 바꿈
+      })
+
+      const hashtags = req.body.hashtags.match(/#[^\s#]*/g) // #을 기준으로 해시태그 추출
+
+      if (hashtags) {
+         const result = await Promise.all(
+            // hashtags 테이블 수정
+            hashtags.map((tag) =>
+               Hashtag.findOrCreate({
+                  where: { title: tag.slice(1) }, //#을 제외한 문자만
+               })
+            )
+         )
+
+         // posthashtag 테이블(교차 테이블) 수정
+         await post.setHashtags(result.map((r) => r[0]))
+      }
+
+      // 수정한 게시물 다시 조회(선택사항)
+      const updatedPost = await Post.findOne({
+         where: { id: req.params.id },
+         include: [
+            {
+               model: User,
+               attributes: ['id', 'nick'], //user테이블의 id, nick 컬럼 값만 가져옴
+            },
+            {
+               model: Hashtag,
+               attributes: ['title'], //hashtags 테이블의 title 컬럼 값만 가져옴
+            },
+         ],
+      })
+
+      res.status(200).json({
+         success: true,
+         post: updatedPost,
+         message: '게시물이 성공적으로 수정되었습니다.',
+      })
    } catch (error) {
       error.status = 500
       error.message = '게시물 수정 중 오류가 발생했습니다.'
