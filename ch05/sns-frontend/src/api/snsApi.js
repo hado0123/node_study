@@ -133,3 +133,15 @@ export const updatePost = async (id, postData) => {
       throw error
    }
 }
+
+// 포스트 삭제
+export const deletePost = async (id) => {
+   try {
+      // id: 특정 post의 id(PK)
+      const response = await snsApi.delete(`/post/${id}`)
+      return response
+   } catch (error) {
+      console.error(`API Request 오류: ${error}`)
+      throw error
+   }
+}
