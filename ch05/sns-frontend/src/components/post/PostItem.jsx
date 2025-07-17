@@ -14,17 +14,21 @@ function PostItem({ post, isAuthenticated, user }) {
 
    // 게시물 삭제
    const onClickDelete = (id) => {
-      dispatch(deletePostThunk(id))
-         .unwrap()
-         .then(() => {
-            // 그냥 navigate만 이동시 삭제된 목록이 여전히 보이기 때문에 삭제 후 바로 리스트 새로 불러오기
-            dispatch(fetchPostsThunk())
-            navigate('/')
-         })
-         .catch((error) => {
-            console.error('게시물 삭제 중 오류 발생: ', error)
-            alert('게시물 삭제에 실패했습니다.' + error)
-         })
+      const result = confirm('삭제하시겠습니까?')
+
+      if (result) {
+         dispatch(deletePostThunk(id))
+            .unwrap()
+            .then(() => {
+               // 그냥 navigate만 이동시 삭제된 목록이 여전히 보이기 때문에 삭제 후 바로 리스트 새로 불러오기
+               dispatch(fetchPostsThunk())
+               navigate('/')
+            })
+            .catch((error) => {
+               console.error('게시물 삭제 중 오류 발생: ', error)
+               alert('게시물 삭제에 실패했습니다.' + error)
+            })
+      }
    }
 
    return (

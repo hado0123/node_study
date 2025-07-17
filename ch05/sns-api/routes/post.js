@@ -198,16 +198,6 @@ router.put('/:id', isLoggedIn, upload.single('img'), async (req, res, next) => {
    }
 })
 
-// 게시물 삭제 localhost:8000/post/:id
-router.delete('/:id', isLoggedIn, async (req, res, next) => {
-   try {
-   } catch (error) {
-      error.status = 500
-      error.message = '게시물 삭제 중 오류가 발생했습니다.'
-      next(error)
-   }
-})
-
 // 특정 게시물 불러오기(id로 게시물 조회) localhost:8000/post/:id
 router.get('/:id', async (req, res, next) => {
    try {
