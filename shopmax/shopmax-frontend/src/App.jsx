@@ -1,3 +1,4 @@
+import './styles/common.css'
 import { Route, Routes, useLocation } from 'react-router-dom'
 
 import Navbar from './components/shared/Navbar'
