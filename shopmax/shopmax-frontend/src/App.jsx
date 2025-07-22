@@ -8,6 +8,8 @@ import Footer from './components/shared/Footer'
 import Home from './pages/Home'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
+import ItemCreatePage from './pages/ItemCreatePage'
+
 import { checkAuthStatusThunk } from './features/authSlice'
 
 function App() {
@@ -26,6 +28,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
+
+            {/* 상품등록 */}
+            <Route path="/items/create" element={<ItemCreatePage />} />
          </Routes>
          <Footer />
       </>
