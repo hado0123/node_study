@@ -35,7 +35,7 @@ const upload = multer({
    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB로 제한
 })
 
-// 상품등록
+// 상품등록 localhost:8000/item/
 router.post('/', upload.array('img'), async (req, res, next) => {
    try {
       // 업로드된 파일 확인
