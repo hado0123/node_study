@@ -11,9 +11,11 @@ import LoginPage from './pages/LoginPage'
 import ItemCreatePage from './pages/ItemCreatePage'
 
 import { checkAuthStatusThunk } from './features/authSlice'
+import ItemListPage from './pages/ItemListPage'
 
 function App() {
    const dispatch = useDispatch()
+   const location = useLocation()
    const { isAuthenticated, user } = useSelector((state) => state.auth) //로그인 상태, 로그인 한 사용자 정보
 
    // 새로고침시 지속적인 로그인 상태 확인을 위해 사용
@@ -28,6 +30,10 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/login" element={<LoginPage />} />
+
+            {/* 상품리스트 */}
+            {/* navigate로 상품리스트 페이지 이동시 key값 덕분에 언마운트 후 마운트 된다 */}
+            <Route path="/items/createlist" element={<ItemListPage key={location.key} />} />
 
             {/* 상품등록 */}
             <Route path="/items/create" element={<ItemCreatePage />} />
