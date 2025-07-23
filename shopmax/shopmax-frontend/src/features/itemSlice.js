@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { createItem, getItems } from '../api/itemApi'
+import { createItem, getItems, deleteItem } from '../api/itemApi'
 
 // 상품등록
 export const createItemThunk = createAsyncThunk('items/createItem', async (itemData, { rejectWithValue }) => {
@@ -18,6 +18,16 @@ export const fetchItemsThunk = createAsyncThunk('items/fetchItems', async (data,
       console.log('data: ', data)
       const response = await getItems(data)
       return response.data
+   } catch (error) {
+      return rejectWithValue(error.response?.data?.message)
+   }
+})
+
+// 상품 삭제
+export const deleteItemThunk = createAsyncThunk('items/deleteItem', async (id, { rejectWithValue }) => {
+   try {
+      await deleteItem(id)
+      return id
    } catch (error) {
       return rejectWithValue(error.response?.data?.message)
    }
@@ -60,6 +70,19 @@ const itemSlice = createSlice({
             state.pagination = action.payload.pagination
          })
          .addCase(fetchItemsThunk.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload
+         })
+      // 상품 삭제
+      builder
+         .addCase(deleteItemThunk.pending, (state) => {
+            state.loading = true
+            state.error = null
+         })
+         .addCase(deleteItemThunk.fulfilled, (state) => {
+            state.loading = false
+         })
+         .addCase(deleteItemThunk.rejected, (state, action) => {
             state.loading = false
             state.error = action.payload
          })
