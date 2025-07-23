@@ -111,7 +111,11 @@ function ItemList() {
                      items.map((item) => (
                         <TableRow key={item.id}>
                            <TableCell align="center">{item.id}</TableCell>
-                           <TableCell align="center">{item.itemNm}</TableCell>
+                           <TableCell align="center">
+                              <RouterLink to={`/items/edit/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                 {item.itemNm}
+                              </RouterLink>
+                           </TableCell>
                            <TableCell align="center">{formatWithComma(String(item.price))}</TableCell>
                            <TableCell align="center">{item.itemSellStatus}</TableCell>
                            <TableCell align="center">{dayjs(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}</TableCell>

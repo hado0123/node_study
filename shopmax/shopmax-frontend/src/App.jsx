@@ -12,6 +12,7 @@ import ItemCreatePage from './pages/ItemCreatePage'
 
 import { checkAuthStatusThunk } from './features/authSlice'
 import ItemListPage from './pages/ItemListPage'
+import ItemEditPage from './pages/ItemEditPage'
 
 function App() {
    const dispatch = useDispatch()
@@ -37,6 +38,9 @@ function App() {
 
             {/* 상품등록 */}
             <Route path="/items/create" element={<ItemCreatePage />} />
+
+            {/* 상품수정 */}
+            <Route path="/items/edit/:id" element={<ItemEditPage />} />
          </Routes>
          <Footer />
       </>

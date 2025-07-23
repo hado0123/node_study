@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { createItem, getItems, deleteItem } from '../api/itemApi'
+import { createItem, getItems, deleteItem, getItemById, updateItem } from '../api/itemApi'
 
 // 상품등록
 export const createItemThunk = createAsyncThunk('items/createItem', async (itemData, { rejectWithValue }) => {
@@ -27,6 +27,29 @@ export const fetchItemsThunk = createAsyncThunk('items/fetchItems', async (data,
 export const deleteItemThunk = createAsyncThunk('items/deleteItem', async (id, { rejectWithValue }) => {
    try {
       await deleteItem(id)
+      return id
+   } catch (error) {
+      return rejectWithValue(error.response?.data?.message)
+   }
+})
+
+// 특정상품 불러오기
+export const fetchItemByIdThunk = createAsyncThunk('items/fetchItemById', async (id, { rejectWithValue }) => {
+   try {
+      const response = await getItemById(id)
+      return response.data.item
+   } catch (error) {
+      return rejectWithValue(error.response?.data?.message)
+   }
+})
+
+// 상품 수정
+export const updateItemThunk = createAsyncThunk('items/updateItem', async (data, { rejectWithValue }) => {
+   try {
+      console.log('data: ', data)
+
+      const { id, itemData } = data // id: 상품 id, itemData: 수정 데이터가 있는 formData() 객체
+      await updateItem(id, itemData)
       return id
    } catch (error) {
       return rejectWithValue(error.response?.data?.message)
@@ -83,6 +106,33 @@ const itemSlice = createSlice({
             state.loading = false
          })
          .addCase(deleteItemThunk.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload
+         })
+      // 특정 상품 불러오기
+      builder
+         .addCase(fetchItemByIdThunk.pending, (state) => {
+            state.loading = true
+            state.error = null
+         })
+         .addCase(fetchItemByIdThunk.fulfilled, (state, action) => {
+            state.loading = false
+            state.item = action.payload
+         })
+         .addCase(fetchItemByIdThunk.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload
+         })
+      // 상품 수정
+      builder
+         .addCase(updateItemThunk.pending, (state) => {
+            state.loading = true
+            state.error = null
+         })
+         .addCase(updateItemThunk.fulfilled, (state) => {
+            state.loading = false
+         })
+         .addCase(updateItemThunk.rejected, (state, action) => {
             state.loading = false
             state.error = action.payload
          })
