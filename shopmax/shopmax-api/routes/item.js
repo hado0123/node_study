@@ -4,6 +4,7 @@ const path = require('path')
 const fs = require('fs')
 const { Op } = require('sequelize')
 const { Item, Img } = require('../models')
+const { isAdmin } = require('./middlewares')
 const router = express.Router()
 
 // uploads 폴더가 없을 경우 새로 생성
@@ -37,7 +38,7 @@ const upload = multer({
 })
 
 // 상품등록 localhost:8000/item/
-router.post('/', upload.array('img'), async (req, res, next) => {
+router.post('/', isAdmin, upload.array('img'), async (req, res, next) => {
    try {
       // 업로드된 파일 확인
       if (!req.files) {
@@ -177,7 +178,7 @@ router.get('/', async (req, res, next) => {
 })
 
 // 상품 삭제 localhost:8000/item/:id
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', isAdmin, async (req, res, next) => {
    try {
       const id = req.params.id // 상품 id
 
@@ -239,7 +240,7 @@ router.get('/:id', async (req, res, next) => {
 })
 
 // 상품 수정 localhost:8000/item/:id
-router.put('/:id', upload.array('img'), async (req, res, next) => {
+router.put('/:id', isAdmin, upload.array('img'), async (req, res, next) => {
    try {
       const id = req.params.id
       const { itemNm, price, stockNumber, itemDetail, itemSellStatus } = req.body
