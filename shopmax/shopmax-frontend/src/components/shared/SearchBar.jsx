@@ -14,7 +14,7 @@ function SearchBar({ onSearch }) {
       e.preventDefault()
 
       // onSearch가 존재하고 searchTerm 값이 빈 문자열이 아니면
-      if (onSearch && !searchTerm.trim()) {
+      if (onSearch && searchTerm.trim()) {
          onSearch(searchTerm.trim())
       }
    }
