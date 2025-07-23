@@ -112,9 +112,9 @@ function ItemList() {
                         <TableRow key={item.id}>
                            <TableCell align="center">{item.id}</TableCell>
                            <TableCell align="center">
-                              <RouterLink to={`/items/edit/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                              <Link href={`/items/edit/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                  {item.itemNm}
-                              </RouterLink>
+                              </Link>
                            </TableCell>
                            <TableCell align="center">{formatWithComma(String(item.price))}</TableCell>
                            <TableCell align="center">{item.itemSellStatus}</TableCell>
