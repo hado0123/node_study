@@ -94,11 +94,13 @@ function Navbar({ isAuthenticated, user }) {
                      onClose={handleCloseNavMenu}
                      sx={{ display: { xs: 'block', md: 'none' } }}
                   >
-                     <MenuItem>
-                        <Link to="/items/createlist" style={{ color: 'black', textDecoration: 'none' }}>
-                           <Typography sx={{ textAlign: 'center' }}>상품등록</Typography>
-                        </Link>
-                     </MenuItem>
+                     {user && user.role === 'ADMIN' && (
+                        <MenuItem>
+                           <Link to="/items/createlist" style={{ color: 'black', textDecoration: 'none' }}>
+                              <Typography sx={{ textAlign: 'center' }}>상품등록</Typography>
+                           </Link>
+                        </MenuItem>
+                     )}
                      <MenuItem>
                         <Typography sx={{ textAlign: 'center' }}>상품구매</Typography>
                      </MenuItem>
@@ -129,11 +131,14 @@ function Navbar({ isAuthenticated, user }) {
                   SHOPMAX
                </Typography>
                <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                  <MenuItem>
-                     <Link to="/items/createlist" style={{ color: 'black', textDecoration: 'none' }}>
-                        <Typography sx={{ textAlign: 'center' }}>상품등록</Typography>
-                     </Link>
-                  </MenuItem>
+                  {/* 관리자만 볼 수 있도록 */}
+                  {user && user.role === 'ADMIN' && (
+                     <MenuItem>
+                        <Link to="/items/createlist" style={{ color: 'black', textDecoration: 'none' }}>
+                           <Typography sx={{ textAlign: 'center' }}>상품등록</Typography>
+                        </Link>
+                     </MenuItem>
+                  )}
                   <MenuItem>
                      <Typography sx={{ textAlign: 'center' }}>상품구매</Typography>
                   </MenuItem>
