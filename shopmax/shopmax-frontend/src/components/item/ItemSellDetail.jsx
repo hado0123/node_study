@@ -13,6 +13,18 @@ function ItemSellDetail() {
    const { id } = useParams() // item의 id
    const dispatch = useDispatch()
    const { item, error, loading } = useSelector((state) => state.items)
+   const [count, setCount] = useState(1) // 수량
+   const [orderPrice, setOrderPrice] = useState(0) // 총 상품가격
+   const [orderComplete, setOrderComplete] = useState(false) // 주문완료 상태
+
+   // 수량 증가시 총 가격 계산
+   // 처음 상세페이지 들어왔을때도 상품가격을 보여주기 위해 useEffect 사용
+   useEffect(() => {
+      if (item) {
+         // 상품이 있다면 상품가격 * 수량
+         setOrderPrice(item.price * count)
+      }
+   }, [item, count]) // 수량이 바뀔때마다 총 가격 변경
 
    //상품 데이터 불러오기
    useEffect(() => {
@@ -53,8 +65,8 @@ function ItemSellDetail() {
                            <Alert severity="error">품절</Alert>
                         ) : (
                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
-                              <NumberInput />
-                              <Typography variant="h6">총 가격:</Typography>
+                              <NumberInput value={count} onChange={(e) => setCount(Number(e.target.value))} min={1} max={item.stockNumber} step={1} />
+                              <Typography variant="h6">총 가격: {formatWithComma(String(orderPrice))}원</Typography>
                               <Button variant="contained" color="primary">
                                  구매하기
                               </Button>
