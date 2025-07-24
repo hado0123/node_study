@@ -84,7 +84,13 @@ function ItemSellDetail() {
                   <Typography variant="body1" gutterBottom sx={{ mt: 4, mb: 5 }}>
                      {item.itemDetail}
                   </Typography>
-                  <Grid container spacing={2}></Grid>
+                  <Grid container spacing={2}>
+                     {item.Imgs.map((img, index) => (
+                        <Grid key={index} xs={12} sm={6} md={4}>
+                           <CardMedia component="img" image={`${import.meta.env.VITE_APP_API_URL}${img.imgUrl}`} alt={`상세 이미지 ${index + 1}`} sx={{ width: '100%', borderRadius: '8px' }} />
+                        </Grid>
+                     ))}
+                  </Grid>
                </Box>
             </Box>
          )}
