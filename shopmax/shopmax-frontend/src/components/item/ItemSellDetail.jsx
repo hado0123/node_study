@@ -77,6 +77,15 @@ function ItemSellDetail() {
                </Grid>
 
                {/* 상세 이미지, 상세 설명 */}
+               <Box sx={{ marginTop: '180px' }}>
+                  <Typography variant="h5" gutterBottom>
+                     상세 정보
+                  </Typography>
+                  <Typography variant="body1" gutterBottom sx={{ mt: 4, mb: 5 }}>
+                     {item.itemDetail}
+                  </Typography>
+                  <Grid container spacing={2}></Grid>
+               </Box>
             </Box>
          )}
       </>
