@@ -48,6 +48,18 @@ function OrderList() {
       setPage(1) // 날짜 검색 할때마다 페이지는 1로 초기화
    }
 
+   if (loading) {
+      return null
+   }
+
+   if (error) {
+      return (
+         <Typography variant="body1" align="center" color="error" mt={2}>
+            에러 발생: {error}
+         </Typography>
+      )
+   }
+
    return (
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
          <Box p={2}>
