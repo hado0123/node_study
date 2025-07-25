@@ -14,6 +14,7 @@ import { checkAuthStatusThunk } from './features/authSlice'
 import ItemListPage from './pages/ItemListPage'
 import ItemEditPage from './pages/ItemEditPage'
 import ItemSellDetailPage from './pages/ItemSellDetailPage'
+import MyOrderListPage from './pages/MyOrderListPage'
 
 function App() {
    const dispatch = useDispatch()
@@ -45,6 +46,9 @@ function App() {
 
             {/* 상품 상세페이지 */}
             <Route path="/items/detail/:id" element={<ItemSellDetailPage />} />
+
+            {/* 주문내역 페이지 */}
+            <Route path="/myorderlist" element={<MyOrderListPage />} />
          </Routes>
          <Footer />
       </>
