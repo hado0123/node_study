@@ -7,7 +7,7 @@ import dayjs from 'dayjs' //날짜 시간 포맷해주는 패키지
 import 'dayjs/locale/ko' // 한글 로케일 불러오기
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getOrdersThunk } from '../../features/orderSlice'
+import { cancelOrderThunk, deleteOrderThunk, getOrdersThunk } from '../../features/orderSlice'
 import { formatWithComma } from '../../utils/priceSet'
 
 function OrderList() {
@@ -20,6 +20,9 @@ function OrderList() {
    const [formattedStartDate, setFormattedStartDate] = useState('') // 시작날짜(포맷후)
    const [formattedEndDate, setFormattedEndDate] = useState('') // 끝날짜(포맷후)
 
+   const [cancelComplete, setCancelComplete] = useState(false) //주문 취소 토글
+   const [deleteComplete, setDeleteComplete] = useState(false) //주문 삭제 토글
+
    useEffect(() => {
       dispatch(
          getOrdersThunk({
@@ -29,7 +32,7 @@ function OrderList() {
             endDate: formattedEndDate,
          })
       )
-   }, [dispatch, page, formattedStartDate, formattedEndDate])
+   }, [dispatch, page, formattedStartDate, formattedEndDate, cancelComplete, deleteComplete])
 
    //날짜 데이터를 포맷
    const handleDateFilter = () => {
@@ -46,6 +49,40 @@ function OrderList() {
       setFormattedEndDate(dayjs(endDate).format('YYYY-MM-DD'))
 
       setPage(1) // 날짜 검색 할때마다 페이지는 1로 초기화
+   }
+
+   // 주문 취소
+   const handleCancelOrder = (id) => {
+      const result = confirm('주문을 취소하시겠습니까?')
+
+      if (result) {
+         dispatch(cancelOrderThunk(id))
+            .unwrap()
+            .then(() => {
+               setCancelComplete((prev) => !prev) // state가 바뀌면서 재렌더링, useEffect 실행
+            })
+            .catch((error) => {
+               console.error('주문 취소 실패:', error)
+               alert('주문 취소 실패: ' + error)
+            })
+      }
+   }
+
+   // 주문 삭제
+   const handleDeleteOrder = (id) => {
+      const result = confirm('주문을 삭제하시겠습니까?')
+
+      if (result) {
+         dispatch(deleteOrderThunk(id))
+            .unwrap()
+            .then(() => {
+               setDeleteComplete((prev) => !prev) // state가 바뀌면서 재렌더링, useEffect 실행
+            })
+            .catch((error) => {
+               console.error('주문 삭제 실패:', error)
+               alert('주문 삭제 실패: ' + error)
+            })
+      }
    }
 
    if (loading) {
@@ -104,11 +141,11 @@ function OrderList() {
                               </Typography>
                            </CardContent>
                            {order.orderStatus === 'ORDER' ? (
-                              <Button variant="contained" color="info" size="small" sx={{ position: 'absolute', top: 8, right: 8 }}>
+                              <Button variant="contained" color="info" size="small" sx={{ position: 'absolute', top: 8, right: 8 }} onClick={() => handleCancelOrder(order.id)}>
                                  주문 취소
                               </Button>
                            ) : (
-                              <Button variant="contained" color="error" size="small" sx={{ position: 'absolute', top: 8, right: 8 }}>
+                              <Button variant="contained" color="error" size="small" sx={{ position: 'absolute', top: 8, right: 8 }} onClick={() => handleDeleteOrder(order.id)}>
                                  주문 삭제
                               </Button>
                            )}
