@@ -7,6 +7,7 @@ import { formatWithComma } from '../../utils/priceSet'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchItemByIdThunk } from '../../features/itemSlice'
+import { createOrderThunk } from '../../features/orderSlice'
 import { useState, useEffect } from 'react'
 
 function ItemSellDetail() {
@@ -25,6 +26,29 @@ function ItemSellDetail() {
          setOrderPrice(item.price * count)
       }
    }, [item, count]) // 수량이 바뀔때마다 총 가격 변경
+
+   // 상품 주문
+   const handleBuy = () => {
+      dispatch(
+         createOrderThunk({
+            items: [
+               {
+                  itemId: id, // 상품 id
+                  count, // 상품수량
+               },
+            ],
+         })
+      )
+         .upwrap()
+         .then(() => {
+            alert('주문이 완료되었습니다.')
+            setOrderComplete(true) //state를 바꿔서 컴포넌트 재렌더링시 바뀐 재고가 보이도록 함
+         })
+         .catch((error) => {
+            console.error('주문 에러:', error)
+            alert('주문에 실패했습니다. ' + error)
+         })
+   }
 
    //상품 데이터 불러오기
    useEffect(() => {
@@ -67,7 +91,7 @@ function ItemSellDetail() {
                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
                               <NumberInput value={count} onChange={(e) => setCount(Number(e.target.value))} min={1} max={item.stockNumber} step={1} />
                               <Typography variant="h6">총 가격: {formatWithComma(String(orderPrice))}원</Typography>
-                              <Button variant="contained" color="primary">
+                              <Button variant="contained" color="primary" onClick={handleBuy}>
                                  구매하기
                               </Button>
                            </Box>
