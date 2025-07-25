@@ -5,13 +5,30 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs' //날짜 시간 포맷해주는 패키지
 import 'dayjs/locale/ko' // 한글 로케일 불러오기
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getOrdersThunk } from '../../features/orderSlice'
 
 function OrderList() {
+   const dispatch = useDispatch()
+   const { orders, pagination, loading, error } = useSelector((state) => state.order)
+   const [page, setPage] = useState(1) // 페이지
+
    const [startDate, setStartDate] = useState(null) // 시작날짜(포맷전)
    const [endDate, setEndDate] = useState(null) // 끝 날짜(포맷전)
    const [formattedStartDate, setFormattedStartDate] = useState('') // 시작날짜(포맷후)
    const [formattedEndDate, setFormattedEndDate] = useState('') // 끝날짜(포맷후)
+
+   useEffect(() => {
+      dispatch(
+         getOrdersThunk({
+            page,
+            limit: 5,
+            startDate: formattedStartDate,
+            endDate: formattedEndDate,
+         })
+      )
+   }, [dispatch, page, formattedStartDate, formattedEndDate])
 
    //날짜 데이터를 포맷
    const handleDateFilter = () => {
@@ -26,6 +43,8 @@ function OrderList() {
       // YYYY-MM-DD 포맷으로 변환
       setFormattedStartDate(dayjs(startDate).format('YYYY-MM-DD'))
       setFormattedEndDate(dayjs(endDate).format('YYYY-MM-DD'))
+
+      setPage(1) // 날짜 검색 할때마다 페이지는 1로 초기화
    }
 
    return (
