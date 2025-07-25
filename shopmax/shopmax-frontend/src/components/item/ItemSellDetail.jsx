@@ -53,7 +53,7 @@ function ItemSellDetail() {
    //상품 데이터 불러오기
    useEffect(() => {
       dispatch(fetchItemByIdThunk(id))
-   }, [dispatch, id])
+   }, [dispatch, id, orderComplete])
 
    return (
       <>
