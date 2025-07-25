@@ -8,6 +8,7 @@ import 'dayjs/locale/ko' // 한글 로케일 불러오기
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getOrdersThunk } from '../../features/orderSlice'
+import { formatWithComma } from '../../utils/priceSet'
 
 function OrderList() {
    const dispatch = useDispatch()
@@ -68,6 +69,53 @@ function OrderList() {
                   날짜 검색
                </Button>
             </Box>
+
+            {/* 주문 리스트 출력 */}
+            {orders.length > 0 ? (
+               <Grid container spacing={2}>
+                  {orders.map((order) => (
+                     <Grid xs={12} key={order.id} sx={{ width: '100%' }}>
+                        <Card sx={{ display: 'flex', mb: 2, position: 'relative' }}>
+                           <CardMedia component="img" sx={{ height: 150, width: 170 }} image={`${import.meta.env.VITE_APP_API_URL}${order.Items.map((i) => i.Imgs.map((img) => img.imgUrl))}`} alt={order.Items.map((i) => i.itemNm)} />
+                           <CardContent sx={{ flex: 1 }}>
+                              <Typography variant="h6" gutterBottom>
+                                 {order.Items.map((i) => i.itemNm)}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary" gutterBottom>
+                                 주문 날짜: {dayjs(order.orderDate).format('YYYY-MM-DD HH:mm:ss')}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary" gutterBottom>
+                                 총 주문 수량: {order.Items.map((i) => i.OrderItem.count)}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary" gutterBottom>
+                                 총 주문 금액: {order.Items.map((i) => formatWithComma(String(i.OrderItem.orderPrice)))}원
+                              </Typography>
+                           </CardContent>
+                           {order.orderStatus === 'ORDER' ? (
+                              <Button variant="contained" color="info" size="small" sx={{ position: 'absolute', top: 8, right: 8 }}>
+                                 주문 취소
+                              </Button>
+                           ) : (
+                              <Button variant="contained" color="error" size="small" sx={{ position: 'absolute', top: 8, right: 8 }}>
+                                 주문 삭제
+                              </Button>
+                           )}
+                        </Card>
+                     </Grid>
+                  ))}
+               </Grid>
+            ) : (
+               <Box sx={{ textAlign: 'center' }}>
+                  <Typography variant="h6">주문 내역이 없습니다.</Typography>
+               </Box>
+            )}
+
+            {/* 페이징 */}
+            {pagination && (
+               <Box display="flex" justifyContent="center" mt={2}>
+                  <Pagination count={pagination.totalPages} page={page} onChange={(event, value) => setPage(value)} color="primary" />
+               </Box>
+            )}
          </Box>
       </LocalizationProvider>
    )
