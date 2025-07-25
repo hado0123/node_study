@@ -42,7 +42,7 @@ function ItemSellDetail() {
          .unwrap()
          .then(() => {
             alert('주문이 완료되었습니다.')
-            setOrderComplete(true) //state를 바꿔서 컴포넌트 재렌더링시 바뀐 재고가 보이도록 함
+            setOrderComplete((prev) => !prev) //state를 바꿔서 컴포넌트 재렌더링시 바뀐 재고가 보이도록 함
          })
          .catch((error) => {
             console.error('주문 에러:', error)
