@@ -18,19 +18,15 @@ function OrderChart() {
             console.log(result.orders) // order 슬라이스의 orders state값 가져옴
 
             /*
-             data = [
-   {
-      name: '신발',
-      totalCount: 10 
-   },
-   {
-      name: '티셔츠',
-      totalCount: 7 
-   }
- ]
-
-
-*/
+               data = [{
+                           name: '신발',
+                           totalCount: 10 
+                        },
+                        {
+                           name: '티셔츠',
+                           totalCount: 7 
+                        }]
+            */
 
             const orders = result.orders
             const itemMap = {}
