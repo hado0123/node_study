@@ -1,4 +1,8 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getChartOrdersThunk } from '../../features/orderSlice'
 
 const data = [
    {
@@ -39,6 +43,32 @@ const data = [
 ]
 
 function OrderChart() {
+   const dispatch = useDispatch()
+   const { loading, error } = useSelector((state) => state.order)
+   const [chartData, setChartData] = useState([])
+
+   useEffect(() => {
+      dispatch(getChartOrdersThunk())
+         .unwrap()
+         // thunk 함수를 실행후엔 무조건 then을 실행하고 result를 통해 값이 있는 state를 가져올 수 있다
+         .then((result) => {
+            // result는 thunk 함수에서 return해주는 response.data
+            console.log(result.orders) // order 슬라이스의 orders state값 가져옴
+         })
+   }, [dispatch])
+
+   if (loading) {
+      return null
+   }
+
+   if (error) {
+      return (
+         <Typography variant="body1" align="center" color="error" mt={2}>
+            에러 발생: {error}
+         </Typography>
+      )
+   }
+
    return (
       <ResponsiveContainer width="100%" height="100%">
          <LineChart

@@ -271,4 +271,28 @@ router.delete('/delete/:id', verifyToken, isLoggedIn, async (req, res, next) => 
    }
 })
 
+// 주문 목록(차트용) localhost:8000/order/chartlist
+router.get('/chartlist', async (req, res, next) => {
+   try {
+      const orders = await OrderItem.findAll({
+         include: [
+            {
+               model: Item,
+               attributes: ['id', 'itemNm', 'price'],
+            },
+         ],
+      })
+
+      res.json({
+         success: true,
+         message: '주문 목록 조회 성공',
+         orders,
+      })
+   } catch (error) {
+      error.status = 500
+      error.message = '주문 내역을 불러오는 중 오류가 발생했습니다.'
+      next(error)
+   }
+})
+
 module.exports = router
