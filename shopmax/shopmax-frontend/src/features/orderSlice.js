@@ -47,7 +47,6 @@ export const deleteOrderThunk = createAsyncThunk('order/deleteOrder', async (id,
 export const getChartOrdersThunk = createAsyncThunk('order/getChartOrders', async (_, { rejectWithValue }) => {
    try {
       const response = await getChartOrders()
-      console.log(response.data.orders)
       return response.data
    } catch (error) {
       return rejectWithValue(error.response?.data?.message)
