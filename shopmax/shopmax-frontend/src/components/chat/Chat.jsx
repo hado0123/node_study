@@ -11,6 +11,7 @@ function Chat() {
    const [messages, setMessages] = useState([]) // 소켓 서버에서 전달받은 채팅 메세지
    const [input, setInput] = useState('') // 입력 메세지
    const [user, setUser] = useState(null) // 소켓 서버에서 전달받은 사용자의 정보
+   const messagesContainerRef = useRef(null) // 메세지 컨테이너 스크롤이 항상 아래로 가도록 하기 위한 ref
 
    useEffect(() => {
       // 소켓서버에서 사용자 정보를 얻기위해 메세지 전송
@@ -43,6 +44,13 @@ function Chat() {
       }
    }, [])
 
+   useEffect(() => {
+      // 스크롤을 메시지 컨테이너의 가장 아래로 이동
+      if (messagesContainerRef.current) {
+         messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
+      }
+   }, [messages]) // messages 상태가 변경될때마다 실행(메세지가 추가될때 마다)
+
    // 전송버튼 클릭시
    const sendMessage = () => {
       if (!input.trim()) return // 빈문자열이면 리턴
@@ -72,6 +80,7 @@ function Chat() {
       >
          <h2>채팅</h2>
          <Box
+            ref={messagesContainerRef} // ref 추가: 해당 DOM을 직접 다룰 수 있다
             sx={{
                height: 300,
                overflowY: 'auto',
