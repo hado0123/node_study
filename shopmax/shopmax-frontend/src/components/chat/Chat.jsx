@@ -80,7 +80,43 @@ function Chat() {
                padding: 1,
                marginBottom: 2,
             }}
-         ></Box>
+         >
+            {/* 
+             messages = [
+               {user: '김하서', message: '안녕'},
+               {user: '김하서', message: '반가워요'},
+               {user: '신짱구', message: '저도 반가워요'}
+            ]
+            */}
+
+            {messages.map((msg, index) => {
+               // user: 소켓에서 전달받은 로그인한 사용자 정보
+               // msg: 메세지 객체
+               const isOwnMessage = msg.user === user?.name
+
+               return (
+                  <Box
+                     key={index}
+                     sx={{
+                        display: 'flex',
+                        marginBottom: 1,
+                        justifyContent: isOwnMessage ? 'flex-end' : 'flex-start',
+                     }}
+                  >
+                     <Box
+                        sx={{
+                           backgroundColor: isOwnMessage ? '#dcf8c6' : '#f1f1f1',
+                           padding: '8px 15px',
+                           borderRadius: 2,
+                           maxWidth: '80%',
+                        }}
+                     >
+                        <strong>{msg.user || '알 수 없음'}:</strong> {msg.message}
+                     </Box>
+                  </Box>
+               )
+            })}
+         </Box>
          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <TextField
                fullWidth
