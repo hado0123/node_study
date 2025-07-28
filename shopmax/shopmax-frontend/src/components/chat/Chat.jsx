@@ -2,7 +2,32 @@ import { useState, useEffect, useRef } from 'react'
 import { io } from 'socket.io-client'
 import { TextField, Button, Box } from '@mui/material'
 
+// 소켓 서버와 연결
+const socket = io(import.meta.env.VITE_APP_API_URL, {
+   withCredentials: true, // 소켓에서 세션을 사용하므로 쿠키를 포함해서 세션 유지
+})
+
 function Chat() {
+   const [messages, setMessages] = useState([]) // 소켓 서버에서 전달받은 채팅 메세지
+   const [input, setInput] = useState('') // 입력 메세지
+   const [user, setUser] = useState(null) // 소켓 서버에서 전달받은 사용자의 정보
+
+   useEffect(() => {
+      // 소켓서버에서 사용자 정보를 얻기위해 메세지 전송
+      socket.emit('user info', 'requestUserInfo')
+
+      // 서버에서 사용자 정보 가져오기
+      socket.on('user info', (userInfo) => {
+         console.log('userInfo: ', userInfo)
+         setUser(userInfo)
+      })
+
+      // 컴포넌트 언마운트 시 이벤트 제거
+      return () => {
+         socket.off('user info')
+      }
+   }, [])
+
    return (
       <Box
          sx={{

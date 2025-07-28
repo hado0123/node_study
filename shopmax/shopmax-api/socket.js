@@ -22,16 +22,16 @@ module.exports = (server, sessionMiddleware) => {
 
       console.log('사용자 연결됨: ', user?.id) // 연결된 사용자의 id 출력
 
-      // 클라이언트에서 'user info' 이벤트 요청시 사용자 정보를 모든 클라이언트에게 전송
+      // 클라이언트에서 'user info' 이벤트 요청시 사용자 정보를 요청을 보낸 클라이언트에게 전송
       socket.on('user info', (msg) => {
          if (msg) {
-            socket.emit('user info', user) // 모든 클라이언트로 사용자 정보 전송
+            socket.emit('user info', user) // 요청을 보낸 클라이언트로 사용자 정보 전송
          }
       })
 
       // 클라이언트에서 'chat messge' 이벤트 요청시 사용자 정보를 모든 클라이언트에게 전송
       socket.on('chat message', (msg) => {
-         io.emit('chat message', { user: user?.name, message: msg })
+         io.emit('chat message', { user: user?.name, message: msg }) // 모든 클라이언트에게 전송
       })
 
       // 클라이언트가 연결 해제 요청시 소켓과의 연결 해제
