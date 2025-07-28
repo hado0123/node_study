@@ -12,19 +12,42 @@ module.exports = (server, sessionMiddleware) => {
       },
    })
 
+   // 소켓의 연결(connection)이 발생하기 직전에 실행되는 미들웨어
+   io.use((socket, next) => {
+      // express의 세션미들웨어를 Socket.IO에서 사용할 수 있도록 설정
+      sessionMiddleware(socket.request, {}, next)
+   })
+
+   // 소켓의 연결(connection)이 발생하기 직전에 실행되는 미들웨어
+   io.use((socket, next) => {
+      // passport의 역직렬화 호출을 통해 사용자 정보를 소켓에서 사용할 수 있도록 설정
+
+      //socket.request.session?.passport?.user에 저장된 사용자 id 확인
+      if (socket.request.session?.passport?.user) {
+         //passport 역직렬화 호출
+         passport.deserializeUser(socket.request.session.passport.user, (err, user) => {
+            if (err) return next(err) // 에러발생이 에러미들웨어로 전송
+            socket.request.user = user // 역직렬화된 사용자 정보를 socket request 객체에 저장
+            next() // 다음 미들웨어 진행
+         })
+      } else {
+         // 로그인 안된 상태에서 소켓에 접속시 소켓 연결 해제(로그인 한 사람만 채팅 가능하도록 함)
+         console.log('비인증 사용자 연결 시도')
+         return socket.disconnect() // 인증되지 않은 사용자 소켓 연결 해제
+      }
+   })
+
    // 소켓의 연결
    io.on('connection', (socket) => {
-      const user = {
-         id: 1,
-         name: '김철수',
-         email: 'test@test.com',
-      }
+      // 역직렬화된 사용자 정보 가져오기
+      const user = socket.request.user
 
       console.log('사용자 연결됨: ', user?.id) // 연결된 사용자의 id 출력
 
       // 클라이언트에서 'user info' 이벤트 요청시 사용자 정보를 요청을 보낸 클라이언트에게 전송
       socket.on('user info', (msg) => {
          if (msg) {
+            // console.log('msg: ', msg)
             socket.emit('user info', user) // 요청을 보낸 클라이언트로 사용자 정보 전송
          }
       })
