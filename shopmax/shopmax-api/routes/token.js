@@ -2,10 +2,10 @@ const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
 const { Domain } = require('../models')
-const { isLoggedIn } = require('./middlewares')
+const { isAdmin } = require('./middlewares')
 
 // 토큰 발급 http://localhost:8000/token/get
-router.get('/get', isLoggedIn, async (req, res, next) => {
+router.get('/get', isAdmin, async (req, res, next) => {
    try {
       const origin = req.get('origin') // http 혹은 https 를 포함한 도메인 주소를 가져온다
 
@@ -42,7 +42,7 @@ router.get('/get', isLoggedIn, async (req, res, next) => {
 })
 
 // DB에 저장된 토큰 가져오기 localhost:8000/token/read
-router.get('/read', isLoggedIn, async (req, res, next) => {
+router.get('/read', isAdmin, async (req, res, next) => {
    try {
       const origin = req.get('origin')
       const userId = req.user.id
