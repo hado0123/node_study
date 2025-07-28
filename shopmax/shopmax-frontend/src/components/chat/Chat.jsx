@@ -22,11 +22,43 @@ function Chat() {
          setUser(userInfo)
       })
 
+      // 서버에서 메세지 수신
+      socket.on('chat message', (msg) => {
+         console.log('msg: ', msg)
+         // msg = {user: '신짱구', message: '저도 반가워요'}
+
+         /*
+           messages = [
+               {user: '김하서', message: '안녕'},
+               {user: '김하서', message: '반가워요'},
+               {user: '신짱구', message: '저도 반가워요'}
+           ]
+          */
+         setMessages((prevMessages) => [...prevMessages, msg])
+      })
+
       // 컴포넌트 언마운트 시 이벤트 제거
       return () => {
          socket.off('user info')
       }
    }, [])
+
+   // 전송버튼 클릭시
+   const sendMessage = () => {
+      if (!input.trim()) return // 빈문자열이면 리턴
+
+      // 소켓서버로 메세지 전송
+      socket.emit('chat message', input)
+      setInput('') // 입력 state 초기화
+   }
+
+   // 메세지 입력 후 엔터 클릭시
+   const handleKeyDown = (e) => {
+      if (e.key === 'Enter') {
+         e.preventDefault() // 기본 엔터키 동작 방지(줄바꿈 방지)
+         sendMessage() // 메세지 전송
+      }
+   }
 
    return (
       <Box
@@ -53,6 +85,9 @@ function Chat() {
             <TextField
                fullWidth
                variant="outlined"
+               value={input}
+               onChange={(e) => setInput(e.target.value)}
+               onKeyDown={handleKeyDown}
                placeholder="메시지를 입력하세요"
                sx={{
                   marginRight: 1,
@@ -61,7 +96,7 @@ function Chat() {
                   },
                }}
             />
-            <Button variant="contained" color="primary" sx={{ flexShrink: 0 }}>
+            <Button variant="contained" color="primary" sx={{ flexShrink: 0 }} onClick={sendMessage}>
                전송
             </Button>
          </Box>
