@@ -95,11 +95,18 @@ function Navbar({ isAuthenticated, user }) {
                      sx={{ display: { xs: 'block', md: 'none' } }}
                   >
                      {user && user.role === 'ADMIN' && (
-                        <MenuItem>
-                           <Link to="/items/createlist" style={{ color: 'black', textDecoration: 'none' }}>
-                              <Typography sx={{ textAlign: 'center' }}>상품등록</Typography>
-                           </Link>
-                        </MenuItem>
+                        <>
+                           <MenuItem>
+                              <Link to="/items/createlist" style={{ color: 'black', textDecoration: 'none' }}>
+                                 <Typography sx={{ textAlign: 'center' }}>상품등록</Typography>
+                              </Link>
+                           </MenuItem>
+                           <MenuItem>
+                              <Link to="/chart" style={{ color: 'black', textDecoration: 'none' }}>
+                                 <Typography sx={{ textAlign: 'center' }}>통계</Typography>
+                              </Link>
+                           </MenuItem>
+                        </>
                      )}
                      <MenuItem>
                         <Typography sx={{ textAlign: 'center' }}>상품구매</Typography>
@@ -133,11 +140,18 @@ function Navbar({ isAuthenticated, user }) {
                <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                   {/* 관리자만 볼 수 있도록 */}
                   {user && user.role === 'ADMIN' && (
-                     <MenuItem>
-                        <Link to="/items/createlist" style={{ color: 'black', textDecoration: 'none' }}>
-                           <Typography sx={{ textAlign: 'center' }}>상품등록</Typography>
-                        </Link>
-                     </MenuItem>
+                     <>
+                        <MenuItem>
+                           <Link to="/items/createlist" style={{ color: 'black', textDecoration: 'none' }}>
+                              <Typography sx={{ textAlign: 'center' }}>상품등록</Typography>
+                           </Link>
+                        </MenuItem>
+                        <MenuItem>
+                           <Link to="/chart" style={{ color: 'black', textDecoration: 'none' }}>
+                              <Typography sx={{ textAlign: 'center' }}>통계</Typography>
+                           </Link>
+                        </MenuItem>
+                     </>
                   )}
                   <MenuItem>
                      <Typography sx={{ textAlign: 'center' }}>상품구매</Typography>
