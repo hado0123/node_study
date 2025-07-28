@@ -3,7 +3,7 @@ const router = express.Router()
 const { sequelize } = require('../models')
 const { Order, Item, User, OrderItem, Img } = require('../models')
 const { isLoggedIn, verifyToken } = require('./middlewares')
-const { Op } = require('sequelize')
+const { Op, col } = require('sequelize')
 
 // 주문 localhost:8000/order
 router.post('/', verifyToken, isLoggedIn, async (req, res, next) => {
@@ -275,13 +275,26 @@ router.delete('/delete/:id', verifyToken, isLoggedIn, async (req, res, next) => 
 router.get('/chartlist', async (req, res, next) => {
    try {
       const orders = await OrderItem.findAll({
+         // flat(평평하다) 형태로 컬럼값 가져오기: col + include attributes 빈배열 + raw값 true
+         // 하나의 객체에 합쳐서 가져온다
+         attributes: ['orderId', 'itemId', 'count', 'orderPrice', [col('Item.itemNm'), 'itemNm'], [col('Item.price'), 'price']],
          include: [
             {
                model: Item,
-               attributes: ['id', 'itemNm', 'price'],
+               attributes: [],
             },
          ],
+         raw: true,
       })
+
+      // const orders = await OrderItem.findAll({
+      //    include: [
+      //       {
+      //          model: Item,
+      //          attributes: ['id', 'itemNm', 'price'],
+      //       },
+      //    ],
+      // })
 
       res.json({
          success: true,

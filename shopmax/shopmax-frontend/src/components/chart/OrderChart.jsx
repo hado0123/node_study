@@ -4,44 +4,6 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getChartOrdersThunk } from '../../features/orderSlice'
 
-const data = [
-   {
-      name: 'Page A',
-      uv: 4000,
-      pv: 2400,
-   },
-   {
-      name: 'Page B',
-      uv: 3000,
-      pv: 1398,
-   },
-   {
-      name: 'Page C',
-      uv: 2000,
-      pv: 9800,
-   },
-   {
-      name: 'Page D',
-      uv: 2780,
-      pv: 3908,
-   },
-   {
-      name: 'Page E',
-      uv: 1890,
-      pv: 4800,
-   },
-   {
-      name: 'Page F',
-      uv: 2390,
-      pv: 3800,
-   },
-   {
-      name: 'Page G',
-      uv: 3490,
-      pv: 4300,
-   },
-]
-
 function OrderChart() {
    const dispatch = useDispatch()
    const { loading, error } = useSelector((state) => state.order)
@@ -54,6 +16,47 @@ function OrderChart() {
          .then((result) => {
             // result는 thunk 함수에서 return해주는 response.data
             console.log(result.orders) // order 슬라이스의 orders state값 가져옴
+
+            /*
+             data = [
+   {
+      name: '신발',
+      totalCount: 10 
+   },
+   {
+      name: '티셔츠',
+      totalCount: 7 
+   }
+ ]
+
+
+*/
+
+            const orders = result.orders
+            const itemMap = {}
+
+            orders.forEach((order) => {
+               const name = order.itemNm // 상품명
+               const count = order.count // 상품갯수
+
+               if (!itemMap[name]) {
+                  itemMap[name] = 0
+               }
+
+               itemMap[name] += count
+            })
+
+            // {신발: 3, 가방: 9, 카라티: 5, 운동화: 3, 점퍼: 3}
+            console.log('itemMap: ', itemMap)
+
+            // 객체 -> 배열 변환
+            const itemSummary = Object.entries(itemMap).map(([name, totalCount]) => ({
+               name,
+               totalCount,
+            }))
+
+            console.log('itemSummary: ', itemSummary)
+            setChartData(itemSummary)
          })
    }, [dispatch])
 
@@ -74,7 +77,7 @@ function OrderChart() {
          <LineChart
             width={400}
             height={300}
-            data={data}
+            data={chartData}
             margin={{
                top: 30,
                right: 30,
@@ -87,8 +90,7 @@ function OrderChart() {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-            <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+            <Line type="monotone" dataKey="totalCount" stroke="#8884d8" activeDot={{ r: 8 }} />
          </LineChart>
       </ResponsiveContainer>
    )
