@@ -26,12 +26,16 @@ const router = express.Router()
  *             properties:
  *               email:
  *                 type: string
+ *                 description: 이메일
  *               name:
  *                 type: string
+ *                 description: 이름
  *               address:
  *                 type: string
+ *                 description: 주소
  *               password:
  *                 type: string
+ *                 description: 비밀번호
  *     responses:
  *       201:
  *         description: 회원가입 성공
@@ -106,8 +110,10 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
  *             properties:
  *               email:
  *                 type: string
+ *                 description: 이메일
  *               password:
  *                 type: string
+ *                 description: 비밀번호
  *     responses:
  *       200:
  *         description: 로그인 성공

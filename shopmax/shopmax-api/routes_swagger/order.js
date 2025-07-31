@@ -25,11 +25,15 @@ const { Op } = require('sequelize')
  *                   properties:
  *                     itemId:
  *                       type: integer
+ *                       description: 주문 상품 id
  *                     count:
  *                       type: integer
+ *                       description: 주문 수량
  *     responses:
  *       201:
  *         description: 주문 생성 성공
+ *       404:
+ *         description: 회원 찾기 실패
  *       500:
  *         description: 서버 오류
  */
@@ -156,32 +160,36 @@ router.post('/', isLoggedIn, async (req, res, next) => {
  * @swagger
  * /order/list:
  *   get:
- *     summary: 주문 목록 조회 (페이징 및 날짜 검색)
+ *     summary: 주문 목록 조회(페이징 및 날짜 검색)
  *     tags: [Order]
  *     parameters:
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
+ *         description: 페이지 번호
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
+ *         description: 페이지당 항목 수
  *       - in: query
  *         name: startDate
  *         schema:
  *           type: string
  *           format: date
+ *         description: 시작 날짜
  *       - in: query
  *         name: endDate
  *         schema:
  *           type: string
  *           format: date
+ *         description: 종료 날짜
  *     responses:
- *       200:
- *         description: 주문 목록 조회 성공
- *       500:
- *         description: 서버 오류
+ *         200:
+ *          description: 주문 목록 조회 성공
+ *         500:
+ *          description: 서버 오류
  */
 router.get('/list', isLoggedIn, async (req, res, next) => {
    try {
@@ -333,12 +341,12 @@ router.post('/cancel/:id', isLoggedIn, async (req, res, next) => {
  *         required: true
  *         schema:
  *           type: integer
- *         description: 주문 ID
+ *         description: 주문 id
  *     responses:
  *       200:
  *         description: 주문 삭제 성공
  *       404:
- *         description: 주문 없음
+ *         description: 주문 내역 없음
  *       500:
  *         description: 서버 오류
  */

@@ -54,22 +54,32 @@ const upload = multer({
  *             properties:
  *               itemNm:
  *                 type: string
+ *                 description: 상품명
  *               price:
  *                 type: number
+ *                 description: 가격
  *               stockNumber:
  *                 type: integer
+ *                 description: 재고
  *               itemDetail:
  *                 type: string
+ *                 description: 상품 상세 설명
  *               itemSellStatus:
  *                 type: string
+ *                 description: 판매상태(SELL, SOLD_OUT)
  *               img:
  *                 type: array
  *                 items:
  *                   type: string
  *                   format: binary
+ *                 description: 업로드 이미지 파일 목록(최대 5개)
  *     responses:
  *       201:
  *         description: 상품 등록 성공
+ *       400:
+ *         description: 파일 업로드 실패
+ *       500:
+ *         description: 서버 오류
  */
 router.post('/', isAdmin, upload.array('img'), async (req, res, next) => {
    try {
@@ -154,15 +164,17 @@ router.post('/', isAdmin, upload.array('img'), async (req, res, next) => {
  *         name: searchCategory
  *         schema:
  *           type: string
- *         description: 검색 범주 (itemNm 또는 itemDetail)
+ *         description: 검색 범주 (itemNm, itemDetail)
  *       - in: query
  *         name: sellCategory
  *         schema:
  *           type: string
- *         description: 판매 상태 (SELL 또는 SOLD_OUT)
+ *         description: 판매 상태 (SELL, SOLD_OUT)
  *     responses:
  *       200:
  *         description: 상품 목록 조회 성공
+ *       500:
+ *         description: 서버 오류
  */
 router.get('/', async (req, res, next) => {
    try {
@@ -259,6 +271,8 @@ router.get('/', async (req, res, next) => {
  *         description: 상품 삭제 성공
  *       404:
  *         description: 상품을 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
  */
 router.delete('/:id', isAdmin, async (req, res, next) => {
    try {
@@ -306,6 +320,8 @@ router.delete('/:id', isAdmin, async (req, res, next) => {
  *         description: 상품 조회 성공
  *       404:
  *         description: 상품을 찾을 수 없음
+ *       500:
+ *         description: 서버 오류
  */
 router.get('/:id', async (req, res, next) => {
    try {
@@ -353,7 +369,7 @@ router.get('/:id', async (req, res, next) => {
  *         required: true
  *         schema:
  *           type: integer
- *         description: 상품 ID
+ *         description: 상품 id
  *     requestBody:
  *       required: true
  *       content:
@@ -363,24 +379,32 @@ router.get('/:id', async (req, res, next) => {
  *             properties:
  *               itemNm:
  *                 type: string
+ *                 description: 상품명
  *               price:
  *                 type: number
+ *                 description: 가격
  *               stockNumber:
  *                 type: integer
+ *                 description: 재고
  *               itemDetail:
  *                 type: string
+ *                 description: 상품 상세 설명
  *               itemSellStatus:
  *                 type: string
+ *                 description: 판매상태(SELL, SOLD_OUT)
  *               img:
  *                 type: array
  *                 items:
  *                   type: string
  *                   format: binary
+ *                 description: 업로드 이미지 파일 목록(최대 5개)
  *     responses:
- *       200:
- *         description: 상품 수정 성공
- *       404:
- *         description: 상품을 찾을 수 없음
+ *       201:
+ *         description: 상품 등록 성공
+ *       400:
+ *         description: 파일 업로드 실패
+ *       500:
+ *         description: 서버 오류
  */
 router.put('/:id', isAdmin, upload.array('img'), async (req, res, next) => {
    try {
